@@ -1,0 +1,20 @@
+// config.h
+
+#ifndef _CONFIG_H
+#define _CONFIG_H
+
+// Replace with your network credentials
+const char *ssid = "xxx";
+const char *password = "xxx";
+
+// // REPLACE with your Domain name and URL path or IP address with path
+const char *serverName = "http://10.0.1.15/api/admin/festoon";
+
+// // API Key should we need it.
+String apiKeyValue = "XXX";
+
+String sensorName = "SI1702";
+String sensorLocation = "festoon_leg_one";
+// //String sensorLocation = "festoon_leg_two";
+// String sensorLocation = "festoon_leg_three";
+// String sensorLocation = "festoon_leg_four";
