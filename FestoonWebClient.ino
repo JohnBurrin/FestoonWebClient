@@ -8,9 +8,6 @@
 
 #include "config.h"
 
-//#define SDA D1 // GPIO0 on ESP-01 module
-//#define SCL D2 // GPIO2 on ESP-01 module
-
 SI7021 sensor;
 
 Adafruit_BMP280 bmp; // use I2C interface
