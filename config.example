@@ -1,20 +1,20 @@
-// config.h
-
 #ifndef _CONFIG_H
 #define _CONFIG_H
-
 // Replace with your network credentials
-const char *ssid = "xxx";
-const char *password = "xxx";
+const char *ssid = "XXXXXXXX";
+const char *password = "XXXXX";
 
-// // REPLACE with your Domain name and URL path or IP address with path
-const char *serverName = "http://10.0.1.15/api/admin/festoon";
+// REPLACE with your Domain name and URL path or IP address with path
+const char *serverName = "http://some-domain.co.uk";
 
 // // API Key should we need it.
-String apiKeyValue = "XXX";
+String apiKeyValue = "please-changeme-if-you-need-me";
 
 String sensorName = "SI1702";
-String sensorLocation = "festoon_leg_one";
-// //String sensorLocation = "festoon_leg_two";
-// String sensorLocation = "festoon_leg_three";
-// String sensorLocation = "festoon_leg_four";
+String sensorLocation = "Leg 1 Top";
+
+String sensorId = "S1";
+// remove this define to not compile BMP280 sensor
+#define _COMPILE_BMP_280
+
+#endif
