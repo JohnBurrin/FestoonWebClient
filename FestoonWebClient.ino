@@ -1,18 +1,20 @@
+#include "config.h"
+
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
 
 #include <Wire.h>
 #include <SI7021.h>
-#include <Adafruit_BMP280.h>
-
-#include "config.h"
 
 SI7021 sensor;
 
-Adafruit_BMP280 bmp; // use I2C interface
-Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
-Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
+#ifdef  _COMPILE_BMP_280
+  #include <Adafruit_BMP280.h>
+  Adafruit_BMP280 bmp; // use I2C interface
+  Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
+  Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
+#endif
 
 WiFiClient wifiClient;
 
@@ -42,14 +44,19 @@ void setup()
     wifiIPString = WiFi.localIP().toString();
 
     sensor.begin(SDA, SCL);
-    bmp.begin(BMP280_ADDRESS_ALT, BMP280_CHIPID);
+    
+    #ifdef _COMPILE_BMP_280
+      bmp.begin(BMP280_ADDRESS_ALT, BMP280_CHIPID);
+    #endif
 }
 
 void loop()
 {
-    sensors_event_t temp_event, pressure_event;
-    bmp_temp->getEvent(&temp_event);
-    bmp_pressure->getEvent(&pressure_event);
+  #ifdef _COMPILE_BMP_280
+      sensors_event_t temp_event, pressure_event; 
+      bmp_temp->getEvent(&temp_event);
+      bmp_pressure->getEvent(&pressure_event);
+  #endif
     
         //Check WiFi connection status
     if (WiFi.status() == WL_CONNECTED)
@@ -65,7 +72,11 @@ void loop()
         String httpRequestData = "api_key=" + apiKeyValue + "&sensor=" + sensorName + "&location=" + sensorLocation;
         httpRequestData = httpRequestData + "&temperature=" + sensor.getCelsiusHundredths() + "&humidity=" + sensor.getHumidityPercent();
         httpRequestData = httpRequestData + "&mac_address=" + String(wifiMacString) + "&ip_address=" + String(wifiIPString);
-        httpRequestData = httpRequestData + "&pressure=" + pressure_event.pressure + "&bmp_temp=" + temp_event.temperature;
+        
+        #ifdef _COMPILE_BMP_280
+          httpRequestData = httpRequestData + "&pressure=" + pressure_event.pressure + "&bmp_temp=" + temp_event.temperature;
+        #endif
+        
         httpRequestData = httpRequestData + "&sensor_id=" + sensorId + "";
         
         // uncomment to see the post data in the monitor
