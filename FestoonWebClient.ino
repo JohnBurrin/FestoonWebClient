@@ -47,7 +47,7 @@ void handleRoot() {
     </style>\
   </head>\
   <body>\
-    <h1>Festoon Leg 2 Top</h1>\
+    <h1>Roaming</h1>\
     <p>Temperature: %.2f&deg;C</p>\
     <p>Humidity: %2d&percnt;</p>\
     <p>Uptime: %02d:%02d:%02d</p>\
