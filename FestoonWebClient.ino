@@ -1,4 +1,5 @@
-#include "_config.h"
+#include "config.h"
+#include "calibration.h"
 
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
@@ -27,16 +28,30 @@ String wifiMacString;
 String wifiIPString;
 
 // Sending interval for millis instead of delay
-const int sendInterval = 30000;
+const int sendInterval = 30000;  
 unsigned long int t = 0;
+
+float temperature;
+int humidity;
+float pressure;
+
+void readSensors(){
+   temperature = ((float) sensor.getCelsiusHundredths() / 100) + temperature_offset;
+   humidity = sensor.getHumidityPercent() + humidity_offset;
+    #ifdef _COMPILE_BMP_280
+        sensors_event_t temp_event, pressure_event; 
+        bmp_temp->getEvent(&temp_event);
+        pressure = bmp_pressure->getEvent(&pressure_event) + pressure_offset;
+        
+    #endif
+}
 
 void handleRoot() {
   char temp[1000];
   int sec = millis() / 1000;
   int min = sec / 60;
   int hr = min / 60;
-  float t = (float) sensor.getCelsiusHundredths() / 100;
-  int h = sensor.getHumidityPercent();
+  readSensors();
   snprintf(temp, 1000,
            "<html>\
   <head>\
@@ -47,12 +62,12 @@ void handleRoot() {
     </style>\
   </head>\
   <body>\
-    <h1>Roaming</h1>\
+    <h1>%s</h1>\
     <p>Temperature: %.2f&deg;C</p>\
     <p>Humidity: %2d&percnt;</p>\
     <p>Uptime: %02d:%02d:%02d</p>\
   </body>\
-</html>", t, h, hr, min % 60, sec % 60
+</html>", sensorLocation, temperature, humidity, hr, min % 60, sec % 60
           );
   httpServer.send(200, "text/html", temp);
 }
@@ -118,12 +133,8 @@ void loop()
 {
     httpServer.handleClient();
     MDNS.update();
-    #ifdef _COMPILE_BMP_280
-        sensors_event_t temp_event, pressure_event; 
-        bmp_temp->getEvent(&temp_event);
-        bmp_pressure->getEvent(&pressure_event);
-    #endif
-    
+
+    readSensors();
         //Check WiFi connection status
     if (WiFi.status() == WL_CONNECTED)
     {
@@ -136,11 +147,11 @@ void loop()
         http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
         String httpRequestData = apiKeyName + "=" + apiKeyValue + "&sensor=" + sensorName + "&location=" + sensorLocation;
-        httpRequestData = httpRequestData + "&temperature=" + sensor.getCelsiusHundredths() + "&humidity=" + sensor.getHumidityPercent();
+        httpRequestData = httpRequestData + "&temperature=" + temperature + "&humidity=" + humidity;
         httpRequestData = httpRequestData + "&mac_address=" + String(wifiMacString) + "&ip_address=" + String(wifiIPString);
         
         #ifdef _COMPILE_BMP_280
-          httpRequestData = httpRequestData + "&pressure=" + pressure_event.pressure + "&bmp_temp=" + temp_event.temperature;
+          httpRequestData = httpRequestData + "&pressure=" + pressure;
         #endif
         
         httpRequestData = httpRequestData + "&sensor_id=" + sensorId + "";
