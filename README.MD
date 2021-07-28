@@ -34,3 +34,29 @@ Mandatory
 ### Other options
 It is possiple to compile this WITHOUT a BMP280, if you want to do this, comment out the line
 ```#define _COMPILE_BMP_280```
+
+## Config
+There are many configuration options.
+
+To set the wifi access set these to your wifi values
+`const char *ssid = "XXXXXXXX";`
+`const char *password = "XXXXX";`
+
+These are for the web services
+`const char* host = "S4-festoon-sensor"; // Use this to view the data in real time http://S4-festoon-sensor.local`
+`const char* update_path = "/firmware";  // Use this to upload a new sketch update http://S4-festoon-sensor.local/firmware`
+`const char* update_username = "admin";  // These are the creditials to access the firmware`
+`const char* update_password = "admin";`
+
+
+The device is designed to use a GET request to send the captured data to an API endpoint
+`const char *serverName = "http://some-domain.co.uk";`
+
+`String apiKeyName = "api_key"; // API Key should we need it.`
+`String apiKeyValue = "please-changeme-if-you-need-me";`
+
+so the above will add to the request 
+`http://some-domain.co.uk?api_key=please-changeme-if-you-need-me`
+
+A full request will look something like this 
+`http://some-domain.co.uk?api_key=please-changeme-if-you-need-me@humidity=98&temperature=28.8&pressure=1024&sensor_id=S1`

@@ -6,9 +6,11 @@ const char *password = "XXXXX";
 
 String sensorLocation = "Leg 1 Top";
 String sensorId = "S1";
-const char* host = "S4-festoon-sensor";
-const char* update_path = "/firmware";
-const char* update_username = "admin";
+
+// These are for the web services
+const char* host = "S4-festoon-sensor"; // Use this to view the data in real time http://S4-festoon-sensor.local
+const char* update_path = "/firmware";  // Use this to upload a new sketch update http://S4-festoon-sensor.local/firmware
+const char* update_username = "admin";  // These are the creditials to access the firmware
 const char* update_password = "admin";
 
 // REPLACE with your Domain name and URL path or IP address with path
