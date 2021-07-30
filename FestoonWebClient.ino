@@ -31,6 +31,9 @@ String wifiIPString;
 const int sendInterval = 30000;  
 unsigned long int t = 0;
 
+const int debugInterval = 1000;  
+unsigned long int dI = 0;
+
 float temperature;
 int humidity;
 float pressure;
@@ -39,10 +42,10 @@ void readSensors(){
    temperature = ((float) sensor.getCelsiusHundredths() / 100) + temperature_offset;
    humidity = sensor.getHumidityPercent() + humidity_offset;
     #ifdef _COMPILE_BMP_280
-        sensors_event_t temp_event, pressure_event; 
-        bmp_temp->getEvent(&temp_event);
-        pressure = bmp_pressure->getEvent(&pressure_event) + pressure_offset;
-        
+      sensors_event_t pressure_event;
+      bmp_pressure->getEvent(&pressure_event);
+      pressure = pressure_event.pressure;
+      
     #endif
 }
 
